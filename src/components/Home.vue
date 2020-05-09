@@ -390,7 +390,7 @@ export default {
       } else {
         var id = this.getPokeId(url);
         url = "https://pokeapi.co/api/v2/pokemon/" + id;
-        urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/1" + id;
+        urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/" + id;
       }
       let that = this;
       axios.all([axios.get(url), axios.get(urlSpecies)]).then(response => {
