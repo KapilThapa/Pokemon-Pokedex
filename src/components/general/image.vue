@@ -1,6 +1,7 @@
 <template>
   <figure v-lazyload class="image__wrapper">
     <img
+      ref="image"
       class="image__item"
       :data-url="source"
     >
@@ -17,6 +18,11 @@ export default {
     source: {
       type: String,
       required: true
+    }
+  },
+  watch:{
+    source: function(){
+      this.$refs.image.src = this.source
     }
   }
 };
