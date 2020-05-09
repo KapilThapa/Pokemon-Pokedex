@@ -1,7 +1,12 @@
 button {
     cursor: pointer;
 }
-
+.color-red{
+    color: red;
+}
+.color-default{
+    color:#666666
+}
 button:disabled {
     cursor: not-allowed;
     border: 2px solid white;
@@ -67,6 +72,11 @@ button:disabled {
     position: relative;
     border-left: 3px solid #dcdcc3;
     padding: 15px;
+    background-color: #e3e3cd;
+}
+.poke-detail-scroll{
+    height: 323px;
+    overflow-x: auto;
 }
 
 .pokedex-content .poke-detail:before {
@@ -129,17 +139,17 @@ button:disabled {
     height: 436px;
 }
 
-.poke-filter-list::-webkit-scrollbar-track {
+.poke-detail-scroll::-webkit-scrollbar-track, .poke-filter-list::-webkit-scrollbar-track {
     -webkit-box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
     background-color: #F5F5F5;
 }
 
-.poke-filter-list::-webkit-scrollbar {
+.poke-detail-scroll::-webkit-scrollbar, .poke-filter-list::-webkit-scrollbar {
     width: 10px;
     background-color: #F5F5F5;
 }
 
-.poke-filter-list::-webkit-scrollbar-thumb {
+.poke-detail-scroll::-webkit-scrollbar-thumb, .poke-filter-list::-webkit-scrollbar-thumb {
     background-color: #F90;
     background-image: -webkit-linear-gradient(45deg,
             rgba(255, 255, 255, .2) 25%,
@@ -159,10 +169,12 @@ button:disabled {
     border-style: inset;
     border-color: initial;
     cursor: pointer;
+    text-align: center;
 }
 
 .item-selected {
     background: salmon;
+    border-style: outset;
 }
 
 .item:hover {
@@ -191,6 +203,7 @@ button:disabled {
     display: grid;
     grid-template-columns: 1fr 2fr;
     grid-gap: 10px;
+    margin-bottom: 10px;
 }
 
 .poke-detail-title {
@@ -320,11 +333,88 @@ button:disabled {
 .poke-info-stats {
     display: grid;
     grid-template-columns: 1fr 1fr;
+    grid-column-gap: 10px;
 }
 
-.poke-stat {
+.poke-info-stats .poke-stat {
     display: grid;
     font-size: 14px;
     grid-template-columns: 1fr 1fr;
     margin-bottom: 10px;
+}
+.poke-info-stats .poke-stat .label{
+    color: red;
+}
+.poke-stat .value{
+    text-align: right;
+}
+.poke-sub-title{
+    border-bottom: 2px solid #ffad33;
+    margin-bottom: 10px;
+    padding: 10px 0;
+}
+.poke-profile-stat .poke-stat {
+    display: grid;
+    font-size: 14px;
+    grid-template-columns: 1fr 2fr;
+    margin-bottom: 10px;
+}
+.poke-profile-stat .poke-stat .label {
+    color: #ffad33;
+}
+
+.poke-profile-stat .poke-stat .value span:not(:last-child)::after{
+    content: "|";
+    color: #ffad33;
+}
+
+.poke-move-heading{
+    border-bottom: 2px solid #78c850;
+    margin-bottom: 10px;
+    padding: 10px 0;
+}
+.poke-move-title{
+    color:#78c850;
+    margin-bottom: 10px
+}
+
+.poke-move-stats .poke-stat {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    margin-bottom: 10px;
+}
+.poke-move-stats .poke-stat .label{
+    color: #78c850;
+}
+
+.accordion {
+    font: inherit;
+    width: 100%;
+    text-align: left;
+    padding: 5px 10px;
+    font-size: 12px;
+    color: #fff;
+    cursor: pointer;
+    background-color: #c7c89e;
+    transition: background-color 0.2s linear;
+}
+
+.accordion:hover,
+.accordion.is-open {
+    background-color: #afb794;
+}
+
+.accordion-content {
+    font-size: 12px;
+    background-color: white;
+    border-left: 1px solid whitesmoke;
+    border-right: 1px solid whitesmoke;
+    padding: 0 10px;
+    overflow: hidden;
+    max-height: 0;
+    transition: max-height 0.2s ease-in-out;
+    margin-bottom: 10px;
+}
+.accordion-content p{
+    margin: 10px 0;
 }
