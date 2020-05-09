@@ -79,10 +79,7 @@
               :key="index"
             >
               <h6>{{ pokemon.name }}</h6>
-              <img
-                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.url)}.png`"
-                alt
-              />
+              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.url)}.png`"></ImageItem>
             </div>
           </div>
           <div class="poke-filter-list" v-if="search.filter == 2">
@@ -93,10 +90,7 @@
               :key="index"
             >
               <h6>{{ pokemon.pokemon_species.name }}</h6>
-              <img
-                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.pokemon_species.url)}.png`"
-                alt
-              />
+              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.pokemon_species.url)}.png`"></ImageItem>
             </div>
           </div>
           <div class="poke-filter-list" v-if="search.filter == 3">
@@ -107,10 +101,7 @@
               :key="index"
             >
               <h6>{{ pokemon.pokemon_species.name }}</h6>
-              <img
-                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.pokemon_species.url)}.png`"
-                alt
-              />
+              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.pokemon_species.url)}.png`"></ImageItem>
             </div>
           </div>
           <div class="poke-filter-list" v-if="search.filter == 4">
@@ -121,10 +112,7 @@
               :key="index"
             >
               <h6>{{ pokemon.name }}</h6>
-              <img
-                :src="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.url)}.png`"
-                alt
-              />
+              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.url)}.png`"></ImageItem>
             </div>
           </div>
           <!-- <div class="poke-pagination">
@@ -174,11 +162,11 @@
                   <div class="label">Weight</div>
                   <div class="value">{{selectedPokemon.weight/10 +"kg"}}</div>
                 </div>
-                <div class="poke-stat">
+                <div class="poke-stat" v-if="selectedPokemon.pokemon_species.growth_rate!=null">
                   <div class="label">Gr Rate</div>
                   <div class="value">{{selectedPokemon.pokemon_species.growth_rate.name}}</div>
                 </div>
-                <div class="poke-stat">
+                <div class="poke-stat" v-if="selectedPokemon.pokemon_species.habitat != null">
                   <div class="label">Habitat</div>
                   <div class="value">{{selectedPokemon.pokemon_species.habitat.name}}</div>
                 </div>
@@ -243,9 +231,11 @@
 
 <script>
 import axios from "axios";
+import ImageItem from "./general/image";
 window._ = require("lodash");
 export default {
   name: "Home",
+  components:{ImageItem},
   data() {
     return {
       allRegion: [],

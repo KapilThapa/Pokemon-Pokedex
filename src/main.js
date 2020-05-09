@@ -13,6 +13,10 @@ import App from './App.vue'
 import '@fortawesome/fontawesome-free/css/all.css'
 import '@fortawesome/fontawesome-free/js/all.js'
 
+import LazyLoadDirective from "./directives/lazyload.js";
+
+Vue.directive("lazyload", LazyLoadDirective);
+
 Vue.config.productionTip = false
 
 new Vue({
