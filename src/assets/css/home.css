@@ -51,6 +51,14 @@ button:disabled {
     display: grid;
     grid-template-columns: 65% 35%;
 }
+.pokedex-about-content {
+    background-color: #f5efdc;
+    height: 100%;
+    overflow: hidden;
+    display: grid;
+    grid-template-columns: 100%;
+    text-align: center;
+}
 
 .poke-list {
     position: relative;

@@ -1,8 +1,5 @@
 <template>
   <div>
-    <div class="logo">
-      <img src="../assets/poke-logo.png" alt="logo" />
-    </div>
     <div class="pokedex">
       <div class="pokedex-content">
         <div class="poke-list">
@@ -342,7 +339,7 @@ export default {
     },
     fetchPokemons() {
       let that = this;
-      axios.get("https://pokeapi.co/api/v2/pokemon?limit=20").then(response => {
+      axios.get("https://pokeapi.co/api/v2/pokemon?limit=807").then(response => {
         that.allPokemons = response.data.results;
         that.allNameFilterPokemons = response.data.results;
       });

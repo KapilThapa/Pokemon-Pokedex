@@ -4,6 +4,7 @@ import VueRouter from 'vue-router'
 Vue.use(VueRouter);
 
 import Home from "./components/Home.vue";
+import About from "./components/About.vue";
 
 export default new VueRouter({
     routes: [
@@ -11,6 +12,11 @@ export default new VueRouter({
             path:'/',
             name:'Home',
             component: Home
+        },
+        {
+            path: '/about',
+            name: 'About',
+            component: About
         }
     ]
 });

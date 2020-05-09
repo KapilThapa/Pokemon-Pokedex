@@ -1,36 +1,24 @@
 <template>
   <div id="app">
     <div class="page-wrapper">
-      <div class="menu-btn">
-        <div class="menu-btn__burger"></div>
-      </div>
-      <div class="sidebar">
-        <ul>
-          <li>Home</li>
-          <li>About</li>
-        </ul>
-      </div>
+      <Sidebar></Sidebar>
       <div class="page-content">
+        <div class="logo">
+          <img src="./assets/poke-logo.png" alt="logo" />
+        </div>
         <router-view></router-view>
       </div>
+      <Footer></Footer>
     </div>
   </div>
 </template>
 
 <script>
+import Sidebar from './components/layouts/Sidebar';
+import Footer from './components/layouts/Footer';
 export default {
   name: "App",
-  mounted(){
-    $(function() {
-      $(".menu-btn").on("click", function() {
-        if ($(this).hasClass("open")) {
-          $(this).removeClass("open");
-        } else {
-          $(this).addClass("open");
-        }
-      });
-    });
-  }
+  components: { Sidebar,Footer }
 };
 </script>
 
