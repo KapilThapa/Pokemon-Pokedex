@@ -23,7 +23,6 @@
               type="text"
               placeholder="Search from here..."
               v-if="search.filter==1"
-              @input="filterByName"
             />
             <select
               v-if="search.filter==2"
@@ -34,7 +33,7 @@
               id="gender"
             >
               <option
-                v-for="(gender,index) in allGender"
+                v-for="(gender,index) in allGenders"
                 :value="`${index+1}`"
                 :key="index"
               >{{gender.name}}</option>
@@ -48,7 +47,7 @@
               id="region"
             >
               <option
-                v-for="(region,index) in allRegion"
+                v-for="(region,index) in allRegions"
                 :value="`${index+1}`"
                 :key="index"
               >{{region.name}}</option>
@@ -62,7 +61,7 @@
               id="pokemon-habitat"
             >
               <option
-                v-for="(habitat,index) in allHabitat"
+                v-for="(habitat,index) in allHabitats"
                 :value="`${index+1}`"
                 :key="index"
               >{{habitat.name}}</option>
@@ -73,46 +72,46 @@
           </div>
           <div class="poke-filter-list" v-if="search.filter == 1">
             <div
-              :class="{'item': true, 'item-selected': selectedPokemon.id ==getPokeId(pokemon.url)}"
-              @click="pokemonDetails(pokemon.url)"
-              v-for="(pokemon, index) in allNameFilterPokemons"
+              :class="{'item': true, 'item-selected': selectedPokemon.id ==pokemon.id}"
+              @click="pokemonDetails(pokemon.id)"
+              v-for="(pokemon, index) in filterByName"
               :key="index"
             >
               <h6>{{ pokemon.name }}</h6>
-              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.url)}.png`"></ImageItem>
+              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`"></ImageItem>
             </div>
           </div>
           <div class="poke-filter-list" v-if="search.filter == 2">
             <div
-              :class="{'item': true, 'item-selected': selectedPokemon.id ==getPokeId(pokemon.pokemon_species.url)}"
-              @click="pokemonDetails(pokemon.pokemon_species.url)"
+              :class="{'item': true, 'item-selected': selectedPokemon.id ==pokemon.id}"
+              @click="pokemonDetails(pokemon.id)"
               v-for="(pokemon, index) in allPokemonsByGender"
               :key="index"
             >
               <h6>{{ pokemon.pokemon_species.name }}</h6>
-              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.pokemon_species.url)}.png`"></ImageItem>
+              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`"></ImageItem>
             </div>
           </div>
           <div class="poke-filter-list" v-if="search.filter == 3">
             <div
-              :class="{'item': true, 'item-selected': selectedPokemon.id ==getPokeId(pokemon.pokemon_species.url)}"
-              @click="pokemonDetails(pokemon.pokemon_species.url)"
+              :class="{'item': true, 'item-selected': selectedPokemon.id ==pokemon.id}"
+              @click="pokemonDetails(pokemon.id)"
               v-for="(pokemon, index) in allPokemonsByRegion"
               :key="index"
             >
               <h6>{{ pokemon.pokemon_species.name }}</h6>
-              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.pokemon_species.url)}.png`"></ImageItem>
+              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`"></ImageItem>
             </div>
           </div>
           <div class="poke-filter-list" v-if="search.filter == 4">
             <div
-              :class="{'item': true, 'item-selected': selectedPokemon.id ==getPokeId(pokemon.url)}"
-              @click="pokemonDetails(pokemon.url)"
+              :class="{'item': true, 'item-selected': selectedPokemon.id ==pokemon.id}"
+              @click="pokemonDetails(pokemon.id)"
               v-for="(pokemon, index) in allPokemonsByHabitat"
               :key="index"
             >
               <h6>{{ pokemon.name }}</h6>
-              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${getPokeId(pokemon.url)}.png`"></ImageItem>
+              <ImageItem :source="`https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`"></ImageItem>
             </div>
           </div>
           <!-- <div class="poke-pagination">
@@ -140,7 +139,7 @@
               </div>
               <div class="poke-info-stats">
                 <div class="poke-stat" v-for="(stat,index) in selectedPokemon.stats" :key="index">
-                  <div class="label">{{ statDisplayName(stat.stat.name) }}</div>
+                  <div class="label">{{ statDisplayLabel(stat.stat.name) }}</div>
                   <div class="value">{{stat.base_stat}}</div>
                 </div>
               </div>
@@ -231,22 +230,19 @@
 
 <script>
 import axios from "axios";
+import { mapGetters, mapActions } from "vuex";
 import ImageItem from "./general/image";
 window._ = require("lodash");
+
 export default {
   name: "Home",
   components:{ImageItem},
   data() {
     return {
-      allRegion: [],
-      allGender: [],
-      allHabitat: [],
-      allPokemons: [],
       allNameFilterPokemons: [],
       allPokemonsByRegion: [],
       allPokemonsByGender: [],
       allPokemonsByHabitat: [],
-      allMoveLearned: [],
       selectedPokemon: {},
       search: {
         value: "",
@@ -257,7 +253,16 @@ export default {
       }
     };
   },
+  created() {
+    this.fetchPokemons();
+    this.pokemonDetails();
+    this.fetchRegions();
+    this.fetchGenders();
+    this.fetchHabitats();
+    this.fetchMoveLearnedMethods();
+  },
   methods: {
+    ...mapActions(["fetchRegions","fetchGenders","fetchHabitats","fetchMoveLearnedMethods","fetchPokemons"]),
     openCloseAccordion(event){
       console.log(event.target);
       event.target.classList.toggle('is-open');
@@ -274,24 +279,12 @@ export default {
         return o.version_group_details[0].move_learn_method.name == movename;
       });
     },
-    filterByName() {
-      let that = this;
-      that.allNameFilterPokemons = this.allPokemons.filter(pokemon => {
-        return (
-          pokemon.name
-            .toLowerCase()
-            .indexOf(this.search.value.toLowerCase()) === 0
-        );
-      });
-    },
     getRespectiveDate() {
-      if (this.search.filter == 1) {
-        this.fetchPokemons();
-      } else if (this.search.filter == 2) {
+      if (this.search.filter == 2) {
         this.fetchPokemonsGender();
       } else if (this.search.filter == 3) {
         this.fetchPokemonsRegion();
-      } else {
+      } else if (this.search.filter ==4) {
         this.fetchPokemonsHabitat();
       }
     },
@@ -302,7 +295,7 @@ export default {
         return url.slice(42).replace("/", "");
       }
     },
-    statDisplayName(name) {
+    statDisplayLabel(name) {
       var temp = name.split("-");
       if (temp.length == 1) {
         return temp[0].substring(0, 3);
@@ -310,57 +303,27 @@ export default {
         return temp[0].substring(0, 1) + "-" + temp[1].substring(0, 2);
       }
     },
-    fetchStatics() {
-      let that = this;
-      axios
-        .all([
-          axios.get("https://pokeapi.co/api/v2/region"),
-          axios.get("https://pokeapi.co/api/v2/gender"),
-          axios.get("https://pokeapi.co/api/v2/pokemon-habitat"),
-          axios.get("https://pokeapi.co/api/v2/move-learn-method")
-        ])
-        .then(response => {
-          that.allRegion = response[0].data.results;
-          that.allGender = response[1].data.results;
-          that.allHabitat = response[2].data.results;
-          that.allMoveLearned = response[3].data.results;
-        })
-        .catch(err => console.log(err));
-    },
-    fetchPokemons() {
-      let that = this;
-      axios.get("https://pokeapi.co/api/v2/pokemon?limit=807").then(response => {
-        that.allPokemons = response.data.results;
-        that.allNameFilterPokemons = response.data.results;
-      });
-    },
     fetchPokemonsRegion() {
       let that = this;
       axios
         .get("https://pokeapi.co/api/v2/region/" + that.search.region)
         .then(response => {
           axios.get(response.data.pokedexes[0].url).then(response => {
+            response.data.pokemon_entries.forEach(pokemon => {
+            pokemon.id = that.getPokeId(pokemon.pokemon_species.url);
+          })
             that.allPokemonsByRegion = response.data.pokemon_entries;
           });
         });
-      // response.data.results.forEach(reason => {
-      // 	axios.get(reason.url)
-      // 	.then(response => {
-      // 		response.data.pokedexes.forEach(pokedex => {
-      // 			axios.get(pokedex.url)
-      // 			.then(response => {
-      // 				that.allPokemonsByRegion = window._.union(that.allPokemonsByRegion,response.data.pokemon_entries);
-      // 			})
-      // 		});
-      //     that.allPokemonsByRegion = window._.uniqBy(that.allPokemonsByRegion,'pokemon_species');
-      // 	});
-      // });
     },
     fetchPokemonsHabitat() {
       let that = this;
       axios
         .get("https://pokeapi.co/api/v2/pokemon-habitat/" + that.search.habitat)
         .then(response => {
+          response.data.pokemon_species.forEach(pokemon =>{
+            pokemon.id = that.getPokeId(pokemon.url);
+          });
           that.allPokemonsByHabitat = response.data.pokemon_species;
         });
     },
@@ -369,19 +332,15 @@ export default {
       axios
         .get("https://pokeapi.co/api/v2/gender/" + that.search.gender)
         .then(response => {
+          response.data.pokemon_species_details.forEach(pokemon => {
+            pokemon.id = that.getPokeId(pokemon.pokemon_species.url);
+          })
           that.allPokemonsByGender = response.data.pokemon_species_details;
         });
     },
-    pokemonDetails(url = "") {
-      var urlSpecies = "";
-      if (url == "") {
-        url = "https://pokeapi.co/api/v2/pokemon/1";
-        urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/1";
-      } else {
-        var id = this.getPokeId(url);
-        url = "https://pokeapi.co/api/v2/pokemon/" + id;
-        urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/" + id;
-      }
+    pokemonDetails(id = 1) {
+      let url = "https://pokeapi.co/api/v2/pokemon/"+id;
+      let urlSpecies = "https://pokeapi.co/api/v2/pokemon-species/"+id;
       let that = this;
       axios.all([axios.get(url), axios.get(urlSpecies)]).then(response => {
         that.selectedPokemon = response[0].data;
@@ -389,11 +348,19 @@ export default {
       });
     }
   },
-  created() {
-    this.fetchPokemons();
-    this.pokemonDetails();
-    this.fetchStatics();
-  }
+  computed: {
+    ...mapGetters(["allRegions","allGenders","allHabitats","allMoveLearned","allPokemons"]),
+    filterByName: function(){
+      let that = this;
+      return that.allPokemons.filter(pokemon => {
+        return (
+          pokemon.name
+            .toLowerCase()
+            .indexOf(that.search.value.toLowerCase()) === 0
+        );
+      });
+    }
+  },
 };
 </script>
 
